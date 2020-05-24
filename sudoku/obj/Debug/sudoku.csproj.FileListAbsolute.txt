@@ -1,0 +1,12 @@
+D:\workspace\sudoku\sudoku\bin\Debug\sudoku.exe.config
+D:\workspace\sudoku\sudoku\bin\Debug\sudoku.exe
+D:\workspace\sudoku\sudoku\bin\Debug\sudoku.pdb
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.Properties.Resources.resources
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.csproj.GenerateResource.cache
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.csproj.CoreCompileInputs.cache
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.exe
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.pdb
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.Form1.resources
+D:\workspace\sudoku\sudoku\bin\Debug\XanderUI.dll
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.csproj.CopyComplete
+D:\workspace\sudoku\sudoku\obj\Debug\sudoku.csprojAssemblyReference.cache
