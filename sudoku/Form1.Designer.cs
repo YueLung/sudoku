@@ -103,7 +103,7 @@
             // 
             this.SpendTimeLabel.AutoSize = true;
             this.SpendTimeLabel.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.SpendTimeLabel.Location = new System.Drawing.Point(819, 309);
+            this.SpendTimeLabel.Location = new System.Drawing.Point(745, 319);
             this.SpendTimeLabel.Name = "SpendTimeLabel";
             this.SpendTimeLabel.Size = new System.Drawing.Size(0, 20);
             this.SpendTimeLabel.TabIndex = 100;
@@ -112,7 +112,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(926, 662);
+            this.ClientSize = new System.Drawing.Size(977, 662);
             this.Controls.Add(this.SpendTimeLabel);
             this.Controls.Add(this.CalculateBtn);
             this.Controls.Add(this.ClearBtn);

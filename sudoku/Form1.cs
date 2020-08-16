@@ -12,6 +12,7 @@ namespace sudoku
 {
     public partial class Form1 : Form
     {
+        public int searchCount = 0;
         public Form1()
         {
             InitializeComponent();
@@ -58,6 +59,7 @@ namespace sudoku
         }
         #endregion
 
+        #region Clear Button Event
         private void ClearBtn_Click(object sender, EventArgs e)
         {
             foreach(var c in this.Controls)
@@ -66,31 +68,43 @@ namespace sudoku
                     ((TextBox)c).Text = "";
             }
         }
+        #endregion
 
         private void CalculateBtn_Click(object sender, EventArgs e)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             List<List<int>> board = getBoardDataFromUI();
-            List<List<List<int>>> possibelBoard = getPossibleListBoard(board);
+            List<List<List<int>>> possibleBoard = getPossibleListBoard(board);
 
             int[] pos = getFirstToFindPos(board);
-            if (pos.Count() == 0) return;
 
-            List<List<int>> result = findAnswer(board, possibelBoard, pos[0], pos[1]);
-            displayResult2toUI(result);
+            if (pos[0] == -1)
+            {
+                displayResultToUI(board);
+            }
+            else
+            {
+                List<List<int>> result = findAnswer(board, possibleBoard, pos[0], pos[1]);
+                displayResultToUI(result);
+            }
 
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            SpendTimeLabel.Text = elapsedMs.ToString() + "ms";
+            SpendTimeLabel.Text = $" Search Count :  {searchCount} \r\n {elapsedMs.ToString()} ms";
         }
 
-        private void displayResult2toUI(List<List<int>> board)
+        private void displayResultToUI(List<List<int>> board)
         {
             for (int i = 0; i < board.Count(); i++)
             {
                 for (int j = 0; j < board[i].Count(); j++)
                 {
+                    if (((TextBox)this.Controls.Find($"Pos_{i}_{j}", true)[0]).Text == "")
+                    {
+                        ((TextBox)this.Controls.Find($"Pos_{i}_{j}", true)[0]).ForeColor = Color.Red;
+                    }
+                    
                     ((TextBox)this.Controls.Find($"Pos_{i}_{j}", true)[0]).Text = board[i][j].ToString();
                 }
             }
@@ -98,8 +112,6 @@ namespace sudoku
 
         int[] getFirstToFindPos(List<List<int>> board)
         {
-            int[] pos = new int[2];
-
             for (int i = 0; i < board.Count(); i++)
             {
                 for (int j = 0; j < board[i].Count(); j++)
@@ -111,21 +123,43 @@ namespace sudoku
                 }
             }
 
-            return pos;
+            return new int[2] { -1, -1 };
         }
 
         private List<List<int>> getBoardDataFromUI()
         {
+            //============================================ test data ============================================
             //init board(those number for test)
-            List<List<int>> board = new List<List<int>>() { new List<int> { 0, 2, 6, 0, 0, 0, 3, 7, 8 },
-                                                            new List<int> { 0, 5, 8, 6, 3, 7, 4, 0, 0 },
-                                                            new List<int> { 0, 4, 7, 0, 0, 0, 5, 6, 1 },
-                                                            new List<int> { 0, 0, 0, 7, 2, 0, 9, 0, 0 },
-                                                            new List<int> { 0, 0, 0, 3, 0, 8, 2, 5, 0 },
-                                                            new List<int> { 8, 0, 2, 0, 0, 0, 0, 1, 0 },
-                                                            new List<int> { 4, 6, 9, 5, 0, 1, 0, 0, 0 },
-                                                            new List<int> { 0, 0, 1, 9, 0, 0, 7, 4, 0 },
-                                                            new List<int> { 0, 3, 0, 0, 4, 0, 0, 9, 0 }};
+            //List<List<int>> board = new List<List<int>>() { new List<int> { 0, 2, 6, 0, 0, 0, 3, 7, 8 },
+            //                                                new List<int> { 0, 5, 8, 6, 3, 7, 4, 0, 0 },
+            //                                                new List<int> { 0, 4, 7, 0, 0, 0, 5, 6, 1 },
+            //                                                new List<int> { 0, 0, 0, 7, 2, 0, 9, 0, 0 },
+            //                                                new List<int> { 0, 0, 0, 3, 0, 8, 2, 5, 0 },
+            //                                                new List<int> { 8, 0, 2, 0, 0, 0, 0, 1, 0 },
+            //                                                new List<int> { 4, 6, 9, 5, 0, 1, 0, 0, 0 },
+            //                                                new List<int> { 0, 0, 1, 9, 0, 0, 7, 4, 0 },
+            //                                                new List<int> { 0, 3, 0, 0, 4, 0, 0, 9, 0 }};
+
+            //List<List<int>> board = new List<List<int>>() { new List<int> { 9, 0, 0, 0, 0, 7, 5, 0, 0 },
+            //                                                new List<int> { 2, 0, 5, 6, 0, 0, 0, 0, 0 },
+            //                                                new List<int> { 0, 0, 8, 0, 1, 0, 0, 0, 2 },
+            //                                                new List<int> { 4, 9, 7, 0, 0, 2, 0, 0, 5 },
+            //                                                new List<int> { 0, 0, 0, 0, 0, 8, 0, 0, 4 },
+            //                                                new List<int> { 0, 0, 0, 7, 6, 0, 2, 0, 9 },
+            //                                                new List<int> { 0, 0, 0, 8, 7, 0, 0, 0, 6 },
+            //                                                new List<int> { 0, 1, 0, 2, 0, 0, 4, 0, 0 },
+            //                                                new List<int> { 0, 6, 2, 3, 0, 9, 0, 0, 0 }};
+
+            List<List<int>> board = new List<List<int>>() { new List<int> { 0, 0, 0, 6, 0, 0, 0, 2, 0 },
+                                                            new List<int> { 8, 0, 1, 0, 0, 7, 9, 0, 0 },
+                                                            new List<int> { 6, 0, 0, 0, 0, 4, 1, 0, 0},
+                                                            new List<int> { 0, 0, 5, 0, 0, 8, 0, 0, 0},
+                                                            new List<int> { 0, 2, 8, 5, 6, 0, 4, 0, 3 },
+                                                            new List<int> { 0, 0, 0, 0, 0, 0, 0, 8, 0 },
+                                                            new List<int> { 0, 0, 0, 0, 9, 0, 0, 0, 7 },
+                                                            new List<int> { 0, 0, 0, 7, 0, 0, 0, 1, 0 },
+                                                            new List<int> { 1, 5, 0, 0, 0, 0, 0, 0, 4 }};
+            //============================================ test data ============================================
 
             foreach (var c in this.Controls)
             {
@@ -149,21 +183,26 @@ namespace sudoku
 
             for (int i = 0; i < board.Count(); i++)
             {
+                if (i == 0)
+                    res.Clear();   
+
                 List<List<int>> rowList = new List<List<int>>();
 
                 for (int j = 0; j < board[i].Count(); j++)
                 {
-                    if (board[i][j] == 0)
+                    if (board[i][j] == 0) // if board[i][j] is empty,
                     {
                         List<int> list = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
                         for (int k = 0; k < board[i].Count(); k++)
                         {
+                            //移除橫排有的數字
                             list.Remove(board[i][k]);
                         }
 
                         for (int k = 0; k < board.Count(); k++)
                         {
+                            //移除縱列有的數字
                             list.Remove(board[k][j]);
                         }
 
@@ -171,18 +210,17 @@ namespace sudoku
                         int y = (j / 3) * 3;
                         for (int k = 0; k < 9; k++)
                         {
+                            //移除9宮格內有的數字
                             list.Remove(board[x + k / 3][y + k % 3]);
                         }
-  
-                        //if (list.Count() == 1)
-                        //{
-                        //    board[i][j] = list[0];
-                        //    list.RemoveAt(0);
-                        //    i = 0;
-                        //    j = 0;
-                        //    res.Clear();
-                        //    break;
-                        //}
+
+                        //list 數量為1 表示可以直接填這個數字
+                        if (list.Count() == 1)
+                        {
+                            board[i][j] = list[0];
+                            i = -1;
+                            break;
+                        }
 
                         rowList.Add(list);
                     }
@@ -200,9 +238,7 @@ namespace sudoku
 
         private List<List<int>> findAnswer(List<List<int>> board, List<List<List<int>>> possibleTable, int depth_y, int depth_x)
         {
-            int a = 0;
-            if (depth_y == 8 && depth_x == 8)
-                a= 2;
+            searchCount++;
 
             List<List<int>> copyBoard = getCopyBoard(board);
 
@@ -269,33 +305,33 @@ namespace sudoku
         {
             int val = board[y][x];
 
-            for (int k = 0; k < board[0].Count(); k++)
+            for (int i = 0; i < board[0].Count(); i++)
             {
-                if (k == x)
+                if (i == x)
                     continue;
 
-                if (val == board[y][k])
+                if (val == board[y][i])
                     return false;
             }
 
-            for (int k = 0; k < board.Count(); k++)
+            for (int i = 0; i < board.Count(); i++)
             {
-                if (k == y)
+                if (i == y)
                     continue;
 
-                if (val == board[k][x])
+                if (val == board[i][x])
                     return false;
             }
 
             int ini_y = (y / 3) * 3;
             int ini_x = (x / 3) * 3;
 
-            for (int k = 0; k < board.Count(); k++)
+            for (int i = 0; i < board.Count(); i++)
             {
-                if (ini_y + k / 3 == y && ini_x + k % 3 == x)
+                if (ini_y + i / 3 == y && ini_x + i % 3 == x)
                     continue;
 
-                if (val == board[ini_y + k / 3][ini_x + k % 3])
+                if (val == board[ini_y + i / 3][ini_x + i % 3])
                     return false;
             }
 
